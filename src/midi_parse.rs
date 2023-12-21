@@ -73,7 +73,15 @@ fn note_on_to_atm_notes(note: &midly::TrackEvent) -> Vec<atm::Note> {
             midly::MidiMessage::NoteOn {
                 key: note_number, ..
             } => {
-                let tmp: u8 = note_number.into();
+                // A4 is 69 in midi, but A4 is 10 in ATM
+                //needs to be a conversion
+                //can only use notes c4-d9
+                let mut tmp: u8 = note_number.into();
+                tmp += 30;
+                if tmp < 59 {
+                    tmp = 59;
+                }
+                tmp -= 59;
                 new_note.active = tmp.into();
                 new_note.noteStr = midi_note_to_letter(note_number.into()); //   note_number.to_string();
             }
